@@ -11,7 +11,7 @@ import deform
 import jinja2
 import ast
 import unicodedata
-
+import unidecode
 from pyramid import httpexceptions
 from pyramid import security
 from pyramid.exceptions import BadCSRFToken
@@ -191,7 +191,10 @@ class AuthController(object):
 	    	infoUser = json.loads(getUserPlazza(username,password))
 		displayName = infoUser["displayName"]
 		display = ""
-		for item in displayName:
+		unaccented_string = unidecode.unidecode(displayName)
+		print('unaccented_string')
+		print(unaccented_string)
+		for item in unaccented_string:
 		    if item != " ":
 		        display = display + item
 		    else:
