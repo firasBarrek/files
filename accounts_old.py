@@ -31,7 +31,6 @@ from h.emails import reset_password
 from h.tasks import mailer
 from h.util.view import json_view
 from h._compat import urlparse
-from h.models import Group
 
 _ = i18n.TranslationString
 
@@ -184,6 +183,7 @@ class AuthController(object):
             try:
                 appstruct = self.form.validate(self.request.POST.items())
                 user = appstruct['user']
+	        print(user)
                 headers = self._login(user)
                 return httpexceptions.HTTPFound(location=self._login_redirect(),
                                         headers=headers)
@@ -192,22 +192,16 @@ class AuthController(object):
 		displayName = infoUser["displayName"]
 		display = ""
 		unaccented_string = unidecode.unidecode(displayName)
+		print('unaccented_string')
+		print(unaccented_string)
 		for item in unaccented_string:
 		    if item != " ":
 		        display = display + item
 		    else:
 			display = display + "_"
-		print("display")
-		print(display)
         	signup_service = self.request.find_service(name='user_signup')
         	user = signup_service.signup(username=display,email=username,password=password)
                 headers = self._login(user)
-
-		group = self.request.db.query(Group).filter_by(pubid="__world__").one()
-        	groups_service = self.request.find_service(name='group')
-        	groups_service.member_join(group,
-                                   self.request.authenticated_userid)
-
                 return httpexceptions.HTTPFound(location=self._login_redirect(),
                                         headers=headers)
 	else:
