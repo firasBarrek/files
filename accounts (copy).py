@@ -185,10 +185,6 @@ class AuthController(object):
                 appstruct = self.form.validate(self.request.POST.items())
                 user = appstruct['user']
                 headers = self._login(user)
-		group = self.request.db.query(Group).filter_by(pubid="__world__").one()
-        	groups_service = self.request.find_service(name='group')
-        	groups_service.member_join(group,
-                                   self.request.authenticated_userid)
                 return httpexceptions.HTTPFound(location=self._login_redirect(),
                                         headers=headers)
             except deform.ValidationFailure:
